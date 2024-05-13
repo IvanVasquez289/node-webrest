@@ -1,3 +1,3 @@
 # Dev
 
-1. 
+1. Clonar el .env template y crear el .env 

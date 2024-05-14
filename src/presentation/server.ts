@@ -26,6 +26,16 @@ export class Server{
         //* Public folder
         this.app.use(express.static(this.public_path))
 
+        // * Routes
+        this.app.get('/api/todos',(req,res)=>{
+            res.json([
+                {id: 1, text: 'Buy bread', createdAt: new Date()},
+                {id: 2, text: 'Buy eggs', createdAt: null},
+                {id: 3, text: 'Buy brebutterad', createdAt: new Date()},
+            ])
+        })
+
+        // * SPA
         this.app.get('*',(req,res)=>{
             const indexPath = path.join(__dirname + `../../../${this.public_path}/index.html`)
             res.sendFile(indexPath)

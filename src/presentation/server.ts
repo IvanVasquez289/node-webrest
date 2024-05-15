@@ -10,7 +10,6 @@ interface Options {
 
 export class Server{
     private app = express()
-
     private readonly port: number;
     private readonly public_path: string;
     private readonly routes: Router;
@@ -25,6 +24,8 @@ export class Server{
     async start(){
 
         //* Middlewares
+        this.app.use(express.json())  // rar
+        this.app.use(express.urlencoded({extended:true}))  // x-www-form-enconded
 
         //* Public folder
         this.app.use(express.static(this.public_path))

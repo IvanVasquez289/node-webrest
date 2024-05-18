@@ -1,23 +1,20 @@
 import { Request, Response } from "express"
-
-const TODOS = [
-    {id: 1, text: 'Buy bread', completedAt: new Date()},
-    {id: 2, text: 'Buy eggs', completedAt: null},
-    {id: 3, text: 'Buy brebutterad', completedAt: new Date()},
-]
+import { prisma } from "../../data/postgres"
 
 export class TodosController {
     // *DI
     constructor(){}
 
-    public getTodos = (req:Request,res:Response) => {
-        res.json(TODOS)
+    public getTodos = async(req:Request,res:Response) => {
+        const todos = await prisma.todo.findMany()
+        res.json(todos)
     }
 
-    public getTodoById = (req:Request,res:Response) => {
+    public getTodoById = async (req:Request,res:Response) => {
         const id = +req.params.id;
         if(isNaN(id)) return res.status(400).json({error: "Id argument is not a number"})
-        const todo = TODOS.find(todo => todo.id == id);
+        
+        const todo = await prisma.todo.findUnique({where: {id}});
 
         (todo)
             ?   res.json({todo})
@@ -25,48 +22,56 @@ export class TodosController {
         
     }
 
-    public createTodo = (req:Request,res:Response) => {
+    public createTodo = async(req:Request,res:Response) => {
         const {text} = req.body
         if(!text) return res.status(400).json({error: 'Text property is required'})
-        
-        const newTodo = {
-            id: TODOS.length + 1,
-            text: text,
-            completedAt: new Date()
-        }
-        TODOS.push(newTodo)
+
+        const newTodo = await prisma.todo.create({
+            data:{
+                text
+            }
+        })
         res.json(newTodo)
+    
+    
     }
 
-    public updateTodo = (req: Request,res: Response) => {
+    public updateTodo =async (req: Request,res: Response) => {
         const id = +req.params.id;
         if(isNaN(id)) return res.status(400).json({error: "Id argument is not a number"});
 
-        const todo = TODOS.find(todo => todo.id == id);
+        const todo = await prisma.todo.findUnique({where:{id}})
         if(!todo) return res.status(404).json({error: `TODO with id:${id} not found`});
 
         const {text,completedAt} = req.body;
-        
-        todo.text = text || todo.text;
 
-        (completedAt == 'null')
-            ? todo.completedAt = null
-            : todo.completedAt = new Date(completedAt || todo.completedAt);
+        const updatedTodo = await prisma.todo.update({
+            where:{
+                id: todo.id
+            },
+            data:{
+                text: text || todo.text,
+                completedAt: (completedAt) ? new Date(completedAt) : null
+            }
+        })
         
-        // ! OJO, REFERENCIA, esto actualiza nuestro arreglo por que los objs en js pasan por referencia
-        res.json(todo)
+        res.json(updatedTodo)
     }
 
-    public deleteTodo = (req: Request,res:Response) => {
+    public deleteTodo =async (req: Request,res:Response) => {
         const id = +req.params.id;
         if(isNaN(id)) return res.status(400).json({error: "Id argument is not a number"});
         
-        const todo = TODOS.find(todo => todo.id == id);
+        const todo = await prisma.todo.findUnique({where:{id}})
         if(!todo) return res.status(404).json({error: `TODO with id:${id} not found`});
-        
-        TODOS.splice(TODOS.indexOf(todo),1)
 
-        res.json(TODOS)
+        const updatedTodos = await prisma.todo.delete({
+            where:{
+                id: todo.id
+            }
+        })
+
+        res.json(updatedTodos)
     }
 
 }

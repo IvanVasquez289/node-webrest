@@ -1,63 +1,70 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodosController = void 0;
-const TODOS = [
-    { id: 1, text: 'Buy bread', completedAt: new Date() },
-    { id: 2, text: 'Buy eggs', completedAt: null },
-    { id: 3, text: 'Buy brebutterad', completedAt: new Date() },
-];
+const postgres_1 = require("../../data/postgres");
+const dtos_1 = require("../../domain/dtos");
 class TodosController {
     // *DI
     constructor() {
-        this.getTodos = (req, res) => {
-            res.json(TODOS);
-        };
-        this.getTodoById = (req, res) => {
+        this.getTodos = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const todos = yield postgres_1.prisma.todo.findMany();
+            res.json(todos);
+        });
+        this.getTodoById = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const id = +req.params.id;
             if (isNaN(id))
                 return res.status(400).json({ error: "Id argument is not a number" });
-            const todo = TODOS.find(todo => todo.id == id);
+            const todo = yield postgres_1.prisma.todo.findUnique({ where: { id } });
             (todo)
                 ? res.json({ todo })
                 : res.status(404).json({ error: `TODO with id:${id} not found` });
-        };
-        this.createTodo = (req, res) => {
-            const { text } = req.body;
-            if (!text)
-                return res.status(400).json({ error: 'Text property is required' });
-            const newTodo = {
-                id: TODOS.length + 1,
-                text: text,
-                completedAt: new Date()
-            };
-            TODOS.push(newTodo);
+        });
+        this.createTodo = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const [error, createTodoDto] = dtos_1.CreateTodoDto.create(req.body);
+            if (error)
+                return res.status(400).json({ error });
+            const newTodo = yield postgres_1.prisma.todo.create({
+                data: createTodoDto
+            });
             res.json(newTodo);
-        };
-        this.updateTodo = (req, res) => {
+        });
+        this.updateTodo = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const id = +req.params.id;
+            const [error, updateTodoDto] = dtos_1.UpdateTodoDto.update(Object.assign(Object.assign({}, req.body), { id }));
+            if (error)
+                return res.status(400).json({ error });
+            const todo = yield postgres_1.prisma.todo.findUnique({ where: { id } });
+            if (!todo)
+                return res.status(404).json({ error: `TODO with id:${id} not found` });
+            const updatedTodo = yield postgres_1.prisma.todo.update({
+                where: { id },
+                data: updateTodoDto === null || updateTodoDto === void 0 ? void 0 : updateTodoDto.values
+            });
+            res.json(updatedTodo);
+        });
+        this.deleteTodo = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const id = +req.params.id;
             if (isNaN(id))
                 return res.status(400).json({ error: "Id argument is not a number" });
-            const todo = TODOS.find(todo => todo.id == id);
+            const todo = yield postgres_1.prisma.todo.findUnique({ where: { id } });
             if (!todo)
                 return res.status(404).json({ error: `TODO with id:${id} not found` });
-            const { text, completedAt } = req.body;
-            todo.text = text || todo.text;
-            (completedAt == 'null')
-                ? todo.completedAt = null
-                : todo.completedAt = new Date(completedAt || todo.completedAt);
-            // ! OJO, REFERENCIA, esto actualiza nuestro arreglo por que los objs en js pasan por referencia
-            res.json(todo);
-        };
-        this.deleteTodo = (req, res) => {
-            const id = +req.params.id;
-            if (isNaN(id))
-                return res.status(400).json({ error: "Id argument is not a number" });
-            const todo = TODOS.find(todo => todo.id == id);
-            if (!todo)
-                return res.status(404).json({ error: `TODO with id:${id} not found` });
-            TODOS.splice(TODOS.indexOf(todo), 1);
-            res.json(TODOS);
-        };
+            const updatedTodos = yield postgres_1.prisma.todo.delete({
+                where: {
+                    id: todo.id
+                }
+            });
+            res.json(updatedTodos);
+        });
     }
 }
 exports.TodosController = TodosController;

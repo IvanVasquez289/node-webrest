@@ -1,4 +1,4 @@
-class TodoEntity{
+export class TodoEntity{
     constructor(
         public id: number,
         public text: string,

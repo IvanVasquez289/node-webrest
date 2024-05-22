@@ -7,7 +7,7 @@ export interface TodoDatasource {
     // todo: paginacion
     getAll():Promise<TodoEntity[]>;
 
-    findById(id:number):Promise<TodoEntity[]>;
+    findById(id:number):Promise<TodoEntity>;
     updateById(updateTodoDto:UpdateTodoDto):Promise<TodoEntity>;
     deleteById(id:number):Promise<TodoEntity>;
 }

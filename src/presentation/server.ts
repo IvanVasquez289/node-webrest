@@ -9,10 +9,11 @@ interface Options {
 }
 
 export class Server{
-    private app = express()
+    public readonly app = express()
     private readonly port: number;
     private readonly public_path: string;
     private readonly routes: Router;
+    private serverListener? : any;
 
     constructor(options: Options){
         const {port,routes,public_path = 'public'} = options;
@@ -20,7 +21,6 @@ export class Server{
         this.public_path = public_path;
         this.routes = routes;
     }
-
     async start(){
 
         //* Middlewares
@@ -39,8 +39,12 @@ export class Server{
             res.sendFile(indexPath)
         })
 
-        this.app.listen(this.port,()=>{
-            console.log('Server is running on port', 3000)
+        this.serverListener = this.app.listen(this.port,()=>{
+            console.log('Server is running on port', this.port)
         })
+    }
+
+    public close() {
+        this.serverListener?.close()
     }
 }

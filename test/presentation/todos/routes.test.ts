@@ -40,11 +40,18 @@ describe("Todo route testing", () => {
     const {body} = await request(testServer.app)
       .get(`/api/todos/${todo.id}`)
       .expect(200);
-
-      console.log(body)
+    
     expect(body).toEqual({
       id: todo.id,
       text: todo.text
     })
+  });
+
+  test("should return an ERROR 404 NOT FOUND api/todos/:id", async() => {
+    const {body} = await request(testServer.app)
+      .get(`/api/todos/999`)
+      .expect(404);
+
+    expect(body).toEqual({error: "Todo with id 999 not found"})
   });
 });

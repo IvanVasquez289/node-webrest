@@ -54,4 +54,38 @@ describe("Todo route testing", () => {
 
     expect(body).toEqual({error: "Todo with id 999 not found"})
   });
+
+  test("should return a new todo /api/todos", async() => {
+    const {body} = await request(testServer.app)
+      .post(`/api/todos`)
+      .send(todo1)
+      .expect(201);
+
+    expect(body).toEqual({
+      id: expect.any(Number),
+      text: expect.any(String)
+    })
+  });
+
+  test("should return an error if text is not valid /api/todos", async() => {
+    const {body} = await request(testServer.app)
+      .post(`/api/todos`)
+      .send({})
+      .expect(400);
+
+    expect(body).toEqual({
+      error: "Text property is required"
+    })
+  });
+
+  test("should return an error if text is empty /api/todos", async() => {
+    const {body} = await request(testServer.app)
+      .post(`/api/todos`)
+      .send({text: ''})
+      .expect(400);
+
+    expect(body).toEqual({
+      error: "Text property is required"
+    })
+  });
 });

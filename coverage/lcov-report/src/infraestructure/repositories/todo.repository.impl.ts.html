@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/domain/entities/todo.entity.ts</title>
+    <title>Code coverage report for src/infraestructure/repositories/todo.repository.impl.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/domain/entities</a> todo.entity.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/infraestructure/repositories</a> todo.repository.impl.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.18% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/27</span>
+                <span class='fraction'>25/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.18% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>23/27</span>
+                <span class='fraction'>25/25</span>
             </div>
         
             
@@ -87,60 +87,54 @@
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
+<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">export class TodoEntity{
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { CreateTodoDto, TodoDatasource, TodoEntity, TodoRepository, UpdateTodoDto } from "../../domain";
+&nbsp;
+export class TodoRepositoryImpl implements TodoRepository {
+&nbsp;
     constructor(
-        public id: number,
-        public text: string,
-        public completedAt?: Date| null,
+        private readonly todoDatasource: TodoDatasource
     ){}
 &nbsp;
-<span class="fstat-no" title="function not covered" >    get isCompleted() {</span>
-<span class="cstat-no" title="statement not covered" >        return !!this.completedAt;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-&nbsp;
-    public static fromObject(object: {[key:string]:any}): TodoEntity{
-        const {id,text,completedAt} = object;
-        if(!id) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error("Id is required");</span>
-        if(!text) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error("Text is required");</span>
-&nbsp;
-        let newCompletedAt = completedAt;
-        if(completedAt){
-            newCompletedAt = new Date(completedAt)
-            if(newCompletedAt.toString() === "Invalid Date")<span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error("Invalid Date")</span>
-<span class="cstat-no" title="statement not covered" >            }</span>
-        }
-        const todo = new TodoEntity(id,text,newCompletedAt)
-        return todo
+    saveTodo(createTodoDto: CreateTodoDto): Promise&lt;TodoEntity&gt; {
+        return this.todoDatasource.saveTodo(createTodoDto)
     }
+    getAll(): Promise&lt;TodoEntity[]&gt; {
+        return this.todoDatasource.getAll()
+    }
+    findById(id: number): Promise&lt;TodoEntity&gt; {
+        return this.todoDatasource.findById(id)
+    }
+    updateById(updateTodoDto: UpdateTodoDto): Promise&lt;TodoEntity&gt; {
+        return this.todoDatasource.updateById(updateTodoDto)
+    }
+    deleteById(id: number): Promise&lt;TodoEntity&gt; {
+        return this.todoDatasource.deleteById(id)
+    }
+&nbsp;
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

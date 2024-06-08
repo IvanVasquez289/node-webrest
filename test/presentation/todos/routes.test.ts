@@ -148,7 +148,7 @@ describe("Todo route testing", () => {
   test("should return 404 if todo not found /api/todos/:id", async() => {
     const {body} = await request(testServer.app)
       .delete(`/api/todos/999`)
-      .expect(400);
+      .expect(404);
     
     expect(body).toEqual({error: "Todo with id 999 not found"})
   })

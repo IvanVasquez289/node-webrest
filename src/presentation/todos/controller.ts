@@ -48,7 +48,7 @@ export class TodosController {
         new UpdateTodo(this.todoRepository)
             .execute(updateTodoDto!)
             .then(todo => res.json(todo))
-            .catch(error => res.status(400).json({error}))
+            .catch(error => res.status(404).json({error}))
     }
 
     public deleteTodo =async (req: Request,res:Response) => {

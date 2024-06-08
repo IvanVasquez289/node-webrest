@@ -43,7 +43,8 @@ describe("Todo route testing", () => {
     
     expect(body).toEqual({
       id: todo.id,
-      text: todo.text
+      text: todo.text,
+      completedAt: todo.completedAt
     })
   });
 
@@ -63,7 +64,8 @@ describe("Todo route testing", () => {
 
     expect(body).toEqual({
       id: expect.any(Number),
-      text: expect.any(String)
+      text: expect.any(String),
+      completedAt: null
     })
   });
 
@@ -88,4 +90,46 @@ describe("Todo route testing", () => {
       error: "Text property is required"
     })
   });
+
+  test( "should update a todo /api/todos/:id", async()=> {
+    const todo = await prisma.todo.create({data: todo1})
+
+    const {body} = await request(testServer.app)
+      .put(`/api/todos/${todo.id}`)
+      .send({text: 'todo updated', completedAt: '2023-09-13'})
+      .expect(200);
+
+    expect(body).toEqual({
+      id: expect.any(Number),
+      text: 'todo updated',
+      completedAt: "2023-09-13T00:00:00.000Z",
+    })
+  })
+
+  // TODO: realizar la operacion con errores personalizados
+  test("should return 404 if todo not found /api/todos/:id", async() => {
+    const {body} = await request(testServer.app)
+      .put(`/api/todos/999`)
+      .send({text: 'todo updated', completedAt: '2023-09-13'})
+      .expect(404);
+
+    expect(body).toEqual({error: "Todo with id 999 not found"})
+  })
+
+  test("should update todo only date /api/todos/:id", async() => {
+    const todo = await prisma.todo.create({data: todo1})
+
+    const {body} = await request(testServer.app)
+      .put(`/api/todos/${todo.id}`)
+      .send({completedAt: '2023-09-13'})
+      .expect(200);
+
+    expect(body).toEqual({
+      id: expect.any(Number),
+      text: expect.any(String),
+      completedAt: "2023-09-13T00:00:00.000Z",
+    })
+  })
+
+
 });
